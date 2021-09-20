@@ -8,10 +8,16 @@
 6. filter에서 token 복호화 및 유저Id responseBody 추가 
 7. filter에서 업데이트 작업 (후처리)
 8. ~~로그인 시 filter에서 후처리 + jwt 초기 발급~~
-9. redis -> 만료시간 setting 
-10. token 만료 시간 세팅
+9. ~~redis -> 만료시간 setting~~
+10. ~~token 만료 시간 세팅~~
 
 
+
+---
+1. Front에서 Access Key 전달 받으면 access key 기반으로 userinfo get하도록 USER manager modify
+2. AWS에 micro service 구축 
+3. 추가 서비스 생각 & 구축 
+4. API 문서 업데이트 
 ```
 127.0.0.1:6379> set name hyunjin # set을 이용하여 key, value형식으로 저장이 가능
 OK # 응답값
