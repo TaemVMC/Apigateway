@@ -2,3 +2,35 @@ server:
   port: 8080
 
 foo: bar_local
+
+
+spring:
+  cloud:
+    gateway:
+#      default-filters:
+#        - name: GlobalFilter
+#          args:
+#            baseMessage: Spring Cloud Gateway GlobalFilter
+#            preLogger: true
+#            postLogger: true
+      routes:
+        - id: verificationManager
+          uri: http://localhost:8001/
+          predicates:
+            - Path=/verification/**
+          filters:
+            - name: VerificationFilter
+              args:
+                baseMessage: Spring Cloud Gateway UserFilter
+                preLogger: true
+                postLogger: true
+        - id: transactionManager
+            uri: http://localhost:8002/
+            predicates:
+              - Path=/transaction/**
+            filters:
+              - name: TransactionFilter
+                args:
+                  baseMessage: Spring Cloud Gateway UserFilter
+                  preLogger: true
+                  postLogger: true
