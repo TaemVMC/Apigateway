@@ -3,7 +3,7 @@ server:
 
 foo: bar_local
 
-
+#
 spring:
   cloud:
     gateway:
@@ -25,12 +25,22 @@ spring:
                 preLogger: true
                 postLogger: true
         - id: transactionManager
-            uri: http://localhost:8002/
-            predicates:
-              - Path=/transaction/**
-            filters:
-              - name: TransactionFilter
-                args:
-                  baseMessage: Spring Cloud Gateway UserFilter
-                  preLogger: true
-                  postLogger: true
+          uri: http://localhost:8002/
+          predicates:
+            - Path=/transaction/**
+          filters:
+            - name: TransactionFilter
+              args:
+                baseMessage: Spring Cloud Gateway UserFilter
+                preLogger: true
+                postLogger: true
+        - id: userManager
+          uri: http://localhost:8003/
+          predicates:
+            - Path=/user/**
+          filters:
+          - name: UserFilter
+            args:
+              baseMessage: Spring Cloud Gateway UserFilter
+              preLogger: true
+              postLogger: true

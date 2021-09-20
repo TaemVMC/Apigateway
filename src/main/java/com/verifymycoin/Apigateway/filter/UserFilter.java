@@ -1,7 +1,6 @@
 package com.verifymycoin.Apigateway.filter;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -10,9 +9,9 @@ import reactor.core.publisher.Mono;
 
 @Slf4j
 @Component
-public class VerificationFilter extends AbstractGatewayFilterFactory<VerificationFilter.Config> {
+public class UserFilter extends AbstractGatewayFilterFactory<UserFilter.Config> {
 
-    public VerificationFilter() {
+    public UserFilter() {
         super(Config.class);
     }
 
@@ -32,7 +31,6 @@ public class VerificationFilter extends AbstractGatewayFilterFactory<Verificatio
     }
 
     @Data
-    @NoArgsConstructor
     public static class Config {
         private String baseMessage;
         private boolean preLogger;
