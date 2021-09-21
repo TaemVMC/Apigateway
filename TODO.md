@@ -2,15 +2,15 @@
 
 2. 토큰 필요 uri / 불필요 uri 분기 
 - 증명 페이지
-- 회원가입 / 로그인 
-- 
+- 회원가입 / 로그인
+- 메인페이지
 
 ~~4. redis db 생성 및 insert / update / delete~~ 
 
 
 5. filter에서 token 인증
 
-6. filter에서 token 복호화 및 유저Id responseBody 추가 
+6. filter에서 token 복호화 및 유저Id responseBody 추가
 
 7. filter에서 업데이트 작업 (후처리)
 
