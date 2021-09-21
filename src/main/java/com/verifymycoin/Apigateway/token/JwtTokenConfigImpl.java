@@ -37,6 +37,8 @@ public class JwtTokenConfigImpl implements JwtTokenConfig{
 
     @Override
     public Claims parseJwtToken(String authorizationHeader) {
+        System.out.println("authorizationHeader in parseJwtToken = " + authorizationHeader);
+        System.out.println("secret in parseJwtToken = " + secret);
         validationAuthorizationHeader(authorizationHeader); // (1)
         String token = extractToken(authorizationHeader); // (2)
 
@@ -63,7 +65,7 @@ public class JwtTokenConfigImpl implements JwtTokenConfig{
     }
 
     @Override
-    public Mono<String> existToken(String userid, String jwt) {
+    public Mono<String> existToken(String userid) {
         return reactiveValueOperations.get(userid);
     }
 

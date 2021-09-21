@@ -44,7 +44,7 @@ public class ApigatewayApplication implements ApplicationRunner {
 //		setOps.members("key").buffer().subscribe(System.out::println);
 		String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ2bWMiLCJpYXQiOjE2MzIxMzY3NTMsImV4cCI6MTYzMjEzODU1MywiaWQiOiLslYTsnbTrlJQiLCJlbWFpbCI6ImFqdWZyZXNoQGdtYWlsLmNvbSJ9.cusnAOSbgnq8wV6ir1zSN_mL5D8eBh2kmKLMFe8Yhqc";
 		jwtTokenConfig.saveTokenInRedis("userid", token).subscribe();
-		System.out.println("jwtTokenConfig.existToken(\"no member\", \"no token\") = " + jwtTokenConfig.existToken("no member", "no token").block());
+		System.out.println("jwtTokenConfig.existToken(\"no member\", \"no token\") = " + jwtTokenConfig.existToken("no member").block());
 
 
 //		TODO

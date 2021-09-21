@@ -11,12 +11,7 @@ import org.springframework.cloud.gateway.filter.factory.rewrite.ModifyResponseBo
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Mono;
-
-import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
-
-
+import org.springframework.web.server.ServerWebExchange;
 @Component
 @Slf4j
 public class JwtRequestFilter extends AbstractGatewayFilterFactory<JwtRequestFilter.Config> {
@@ -32,22 +27,29 @@ public class JwtRequestFilter extends AbstractGatewayFilterFactory<JwtRequestFil
     public GatewayFilter apply(JwtRequestFilter.Config config) {
         return ((exchange, chain) -> {
             log.info("Before proxy -> JwtRequestFilter start");
-            //TODO :  Redis 토큰 있는지, 유효하냐.
+            ServerWebExchange modifiedExchange ;
             try {
+
+//                validation token
                 String token = exchange.getRequest().getHeaders().getFirst("Authorization");
-                System.out.println("JWT token (extracted) = " + token);
-                String userId = jwtTokenConfig.parseJwtToken(token).getId();
-                if(FALSE.equals(jwtTokenConfig.existToken(userId, token).block())) {
-                    throw new JwtException("does not exist token in database");
-                }
-            } catch (JwtException jwtException) {
-                //TODO reject
+                String userId = jwtTokenConfig.parseJwtToken(token).get("id").toString();
+                jwtTokenConfig.existToken(userId).subscribe(existToken -> {
+                    if(existToken.isEmpty() || !existToken.equals(token)) throw new JwtException("does not exist token in database");
+                });
+
+//                userId setting in requestHeader
+                modifiedExchange =  exchange
+                                    .mutate()
+                                    .request(request -> request.header("userId", userId))
+                                    .build();
+
+            } catch (JwtException | IllegalArgumentException| NullPointerException jwtException) {
                 log.error("jwtException = {}" , jwtException.getMessage());
                 exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
                 return exchange.getResponse().setComplete();
             }
 
-            return chain.filter(exchange);
+            return chain.filter(modifiedExchange);
         });
     }
 

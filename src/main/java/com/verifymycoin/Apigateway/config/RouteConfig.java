@@ -43,7 +43,6 @@ public class RouteConfig {
                 .route(r -> r.path("/user/**")
                         .filters(f -> f
                                 .filter(jwtRequestFilter.apply(new JwtRequestFilter.Config("dummy", true, false)))
-                                .addRequestHeader("userId", "dummy user id")
                                 .modifyResponseBody(String.class, String.class, this::addJWToken))
                         .uri("http://localhost:8003"))
                 .build();
@@ -52,6 +51,19 @@ public class RouteConfig {
     private Publisher<String> addJWToken(ServerWebExchange exchange, String body) {
         ServerHttpResponse response = exchange.getResponse();
         if (response.getStatusCode() == HttpStatus.OK) {
+//            TODO : list 처리 1. [ -> 2.  \\ jwt key
+//            {
+//              data : data ,
+//            data : data
+//            }
+//            { jwt : ~~ ,
+//                code : 1001,
+//            message : ~~ ,
+            //                       {
+//                          data : data ,
+//                          data : data
+//                          }
+//            }
             JSONObject jsObject = new JSONObject(body);
             String jwt = jwtTokenConfig.makeToken(jsObject.getString("userId"), jsObject.getString("email"));
             jsObject.put("jwt", jwt);

@@ -10,6 +10,8 @@
 8. ~~로그인 시 filter에서 후처리 + jwt 초기 발급~~
 9. ~~redis -> 만료시간 setting~~
 10. ~~token 만료 시간 세팅~~
+11. .ConnectException 구현 
+12. list JSONObject 처리 
 
 
 

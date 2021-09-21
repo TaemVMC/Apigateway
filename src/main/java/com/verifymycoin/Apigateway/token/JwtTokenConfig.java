@@ -13,6 +13,6 @@ public interface JwtTokenConfig {
 
     public Mono<String> getTokenByUserId(String userid);
 
-    public Mono<String> existToken(String userid, String jwt);
+    public Mono<String> existToken(String userid);
 
 }
