@@ -14,7 +14,7 @@
 11. User Manager sigup 수정 : Front에서 Access Key 전달 받는다. -> access key 기반으로 userinfo를 google에서 받아 회원가입 진행.
 12. AWS에 micro service 구축
 13. 추가 서비스 생각 & 구축
-14. API 문서 업데이트
+14. ~~API 문서 업데이트~~
 15. .ConnectException 구현 
 16. list JSONObject 처리
 
