@@ -11,7 +11,7 @@
 9. ~~redis -> 만료시간 setting~~
 10. ~~token 만료 시간 세팅~~
 11. .ConnectException 구현 
-12. list JSONObject 처리 
+12. list JSONObject 처리
 
 
 
