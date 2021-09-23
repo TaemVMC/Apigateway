@@ -1,5 +1,11 @@
+vmcServicesAddr:
+  UserManager: "http://localhost:8001"
+  VerificationManager: "http://localhost:8002"
+  TransactionManager: "http://localhost:8003"
+
 server:
-  port: 8080
+  port: 8000
+
 spring:
   redis:
     host: localhost

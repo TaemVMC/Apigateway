@@ -1,27 +1,13 @@
 package com.verifymycoin.Apigateway;
 
 import com.verifymycoin.Apigateway.token.JwtTokenConfig;
-import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.gateway.route.RouteLocator;
-import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
-import org.springframework.context.annotation.Bean;
-import org.springframework.data.redis.connection.DataType;
-import org.springframework.data.redis.core.ReactiveListOperations;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
-import org.springframework.data.redis.core.ReactiveSetOperations;
-import org.springframework.data.redis.core.RedisTemplate;
-import reactor.core.publisher.Mono;
 
-import java.io.Console;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Map;
-import java.util.Set;
 
 @SpringBootApplication
 public class ApigatewayApplication implements ApplicationRunner {
@@ -39,18 +25,19 @@ public class ApigatewayApplication implements ApplicationRunner {
 	public void run(ApplicationArguments args) throws Exception {
 
 
-//		setOps.add("key",);
-//		setOps.add("key","test ests e");
-//		setOps.members("key").buffer().subscribe(System.out::println);
-		String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ2bWMiLCJpYXQiOjE2MzIxMzY3NTMsImV4cCI6MTYzMjEzODU1MywiaWQiOiLslYTsnbTrlJQiLCJlbWFpbCI6ImFqdWZyZXNoQGdtYWlsLmNvbSJ9.cusnAOSbgnq8wV6ir1zSN_mL5D8eBh2kmKLMFe8Yhqc";
-		jwtTokenConfig.saveTokenInRedis("userid", token).subscribe();
-		System.out.println("jwtTokenConfig.existToken(\"no member\", \"no token\") = " + jwtTokenConfig.existToken("no member").block());
-
-
-//		TODO
-//		key 없을 때 / value없을 때
-		System.out.println(" get token by user id = " + jwtTokenConfig.getTokenByUserId("userid"));
+////		setOps.add("key",);
+////		setOps.add("key","test ests e");
+////		setOps.members("key").buffer().subscribe(System.out::println);
+//		String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ2bWMiLCJpYXQiOjE2MzIxMzY3NTMsImV4cCI6MTYzMjEzODU1MywiaWQiOiLslYTsnbTrlJQiLCJlbWFpbCI6ImFqdWZyZXNoQGdtYWlsLmNvbSJ9.cusnAOSbgnq8wV6ir1zSN_mL5D8eBh2kmKLMFe8Yhqc";
+//		String userId = "hwang";
+//		jwtTokenConfig.saveTokenInRedis(userId, token).subscribe();
+//		System.out.println("jwtTokenConfig.existToken("+userId+") = " + jwtTokenConfig.existToken(userId).block());
 //
+//
+////		TODO
+////		key 없을 때 / value없을 때
+//		System.out.println(" get token by user id = " + jwtTokenConfig.getTokenByUserId(userId).block());
+
 
 	}
 

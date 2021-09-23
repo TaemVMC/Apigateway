@@ -1,11 +1,10 @@
 package com.verifymycoin.Apigateway.token;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Header;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.ReactiveValueOperations;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
@@ -13,11 +12,14 @@ import java.time.Duration;
 import java.util.Date;
 
 @Component
+@Slf4j
 @RequiredArgsConstructor
 public class JwtTokenConfigImpl implements JwtTokenConfig{
 
     @Value("${token.secret}")
     private String secret;
+    private final String ISSUER = "VMC";
+    private final long JWT_DURATION_MIN = 30;
 
     private final ReactiveValueOperations<String, String> reactiveValueOperations;
 
@@ -26,9 +28,9 @@ public class JwtTokenConfigImpl implements JwtTokenConfig{
         Date now = new Date();
         return Jwts.builder()
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE) // (1)
-                .setIssuer("vmc") // (2)
+                .setIssuer(ISSUER) // (2)
                 .setIssuedAt(now) // (3)
-                .setExpiration(new Date(now.getTime() + Duration.ofMinutes(30).toMillis())) // (4)
+                .setExpiration(new Date(now.getTime() + Duration.ofMinutes(JWT_DURATION_MIN).toMillis())) // (4)
                 .claim("id", userId) // (5)
                 .claim("email", useremail)
                 .signWith(SignatureAlgorithm.HS256, secret) // (6)
@@ -36,46 +38,29 @@ public class JwtTokenConfigImpl implements JwtTokenConfig{
     }
 
     @Override
-    public Claims parseJwtToken(String authorizationHeader) {
-        System.out.println("authorizationHeader in parseJwtToken = " + authorizationHeader);
-        System.out.println("secret in parseJwtToken = " + secret);
-        validationAuthorizationHeader(authorizationHeader); // (1)
-        String token = extractToken(authorizationHeader); // (2)
-
+    public Claims parseToken(String jwt) {
         return Jwts.parser()
                 .setSigningKey(secret) // (3)
-                .parseClaimsJws(token) // (4)
+                .parseClaimsJws(jwt) // (4)
                 .getBody();
     }
 
     @Override
-    public boolean checkExpirationToken(Claims claims) {
-//        exist redis and timeout check
-
-        return false;
+    public String resolveToken(ServerHttpRequest request) {
+        String authorizationHeader = request.getHeaders().getFirst("Authorization");
+        if(authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")){
+            throw new IllegalArgumentException("Authorization Header Error");
+        }
+        return authorizationHeader.substring("Bearer ".length());
     }
 
+    @Override
     public Mono<Boolean> saveTokenInRedis(String userId, String jwt) {
         return reactiveValueOperations.set(userId, jwt, Duration.ofMinutes(30));
     }
 
     @Override
-    public Mono<String> getTokenByUserId(String userid) {
+    public Mono<String> getTokenInRedisByUserId(String userid){
         return reactiveValueOperations.get(userid);
-    }
-
-    @Override
-    public Mono<String> existToken(String userid) {
-        return reactiveValueOperations.get(userid);
-    }
-
-    private void validationAuthorizationHeader(String header) {
-        if (header == null || !header.startsWith("Bearer ")) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    private String extractToken(String authorizationHeader) {
-        return authorizationHeader.substring("Bearer ".length());
     }
 }

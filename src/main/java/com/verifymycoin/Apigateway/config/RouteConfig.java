@@ -1,15 +1,15 @@
 package com.verifymycoin.Apigateway.config;
 
-import lombok.extern.slf4j.Slf4j;
-import org.json.JSONObject;
-
-
-import com.verifymycoin.Apigateway.filter.JwtRequestFilter;
+import com.verifymycoin.Apigateway.filter.JwtRenewFilter;
+import com.verifymycoin.Apigateway.filter.JwtValidateFilter;
 import com.verifymycoin.Apigateway.token.JwtTokenConfig;
 
 
+import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
+import org.json.JSONObject;
 import org.reactivestreams.Publisher;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -24,50 +24,41 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 @Slf4j
 public class RouteConfig {
+    @Value("${vmcServicesAddr.UserManager}")
+    private String userManagerAddr;
 
     private final JwtTokenConfig jwtTokenConfig;
 
     @Bean
-    public RouteLocator customRouteLocator(RouteLocatorBuilder builder, JwtRequestFilter jwtRequestFilter) {
-
+    public RouteLocator customRouteLocator(RouteLocatorBuilder builder, JwtRenewFilter jwtRenewFilter, JwtValidateFilter jwtValidateFilter) {
         return builder.routes()
                 .route("signin_route", r -> r.path("/user/signin")
                         .filters(f -> f
-                                .modifyResponseBody(String.class, String.class, this::addJWToken))
-//                                .filter(jwtRequestFilter.apply(new JwtRequestFilter.Config("dummy", true, false))))
-                        .uri("http://localhost:8003/"))
+                                .modifyResponseBody(String.class, String.class, this::createJWToken))
+                        .uri(userManagerAddr))
                 .route("signup_route", r -> r.path("/user/signup")
                         .filters(f -> f
-                                .modifyResponseBody(String.class, String.class, this::addJWToken))
+                                .modifyResponseBody(String.class, String.class, this::createJWToken))
                         .uri("http://localhost:8003/"))
                 .route(r -> r.path("/user/**")
                         .filters(f -> f
-                                .filter(jwtRequestFilter.apply(new JwtRequestFilter.Config("dummy", true, false)))
-                                .modifyResponseBody(String.class, String.class, this::addJWToken))
-                        .uri("http://localhost:8003"))
+                                .filter(jwtValidateFilter.apply(new JwtValidateFilter.Config("dummy", true, false)))
+                                .filter(jwtRenewFilter.apply(new JwtRenewFilter.Config("dummy", true, false))))
+                        .uri(userManagerAddr))
                 .build();
     }
 
-    private Publisher<String> addJWToken(ServerWebExchange exchange, String body) {
+    /**
+    * UserManager에서 회원가입/로그인이 완료되면 새로운 JWT를 생성하고 redis에 저장한다.
+    * */
+    private Publisher<String> createJWToken(ServerWebExchange exchange, String body) {
         ServerHttpResponse response = exchange.getResponse();
         if (response.getStatusCode() == HttpStatus.OK) {
-//            TODO : list 처리 1. [ -> 2.  \\ jwt key
-//            {
-//              data : data ,
-//            data : data
-//            }
-//            { jwt : ~~ ,
-//                code : 1001,
-//            message : ~~ ,
-            //                       {
-//                          data : data ,
-//                          data : data
-//                          }
-//            }
             JSONObject jsObject = new JSONObject(body);
             String jwt = jwtTokenConfig.makeToken(jsObject.getString("userId"), jsObject.getString("email"));
-            jsObject.put("jwt", jwt);
-            body = jsObject.toString();
+            response.getHeaders().add("jwt", jwt);
+//            jsObject.put("jwt", jwt);
+//            body = jsObject.toString();
 
             jwtTokenConfig
                     .saveTokenInRedis(jsObject.getString("userId"), jwt)
