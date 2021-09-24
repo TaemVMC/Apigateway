@@ -27,6 +27,12 @@ public class RouteConfig {
     @Value("${vmcServicesAddr.UserManager}")
     private String userManagerAddr;
 
+    @Value("${vmcServicesAddr.VerificationManager}")
+    private String verificationManagerAddr;
+
+    @Value("${vmcServicesAddr.TransactionManager}")
+    private String transactionManagerAddr;
+
     private final JwtTokenConfig jwtTokenConfig;
 
     @Bean
@@ -45,6 +51,16 @@ public class RouteConfig {
                                 .filter(jwtValidateFilter.apply(new JwtValidateFilter.Config("dummy", true, false)))
                                 .filter(jwtRenewFilter.apply(new JwtRenewFilter.Config("dummy", true, false))))
                         .uri(userManagerAddr))
+                .route(r -> r.path("/verification/**")
+                        .filters(f -> f
+                                .filter(jwtValidateFilter.apply(new JwtValidateFilter.Config("dummy", true, false)))
+                                .filter(jwtRenewFilter.apply(new JwtRenewFilter.Config("dummy", true, false))))
+                        .uri(verificationManagerAddr))
+                .route(r -> r.path("/exchange/**")
+                        .filters(f -> f
+                                .filter(jwtValidateFilter.apply(new JwtValidateFilter.Config("dummy", true, false)))
+                                .filter(jwtRenewFilter.apply(new JwtRenewFilter.Config("dummy", true, false))))
+                        .uri(transactionManagerAddr))
                 .build();
     }
 
