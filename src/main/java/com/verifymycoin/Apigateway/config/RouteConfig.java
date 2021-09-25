@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
 import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.reactive.error.ErrorAttributes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -83,6 +84,10 @@ public class RouteConfig {
         return Mono.just(body);
     }
 
+    @Bean
+    public ErrorAttributes errorAttributes() {
+        return new CustomErrorAttributes();
+    }
 //    @Bean
 //    public RouteLocator verificationRouteLocator(RouteLocatorBuilder builder, VerificationFilter verificationFilter) {
 //

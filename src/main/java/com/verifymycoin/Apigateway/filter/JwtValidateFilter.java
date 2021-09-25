@@ -8,9 +8,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
+import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import java.nio.charset.StandardCharsets;
 
 @Component
 @Slf4j
@@ -41,19 +46,20 @@ public class JwtValidateFilter extends AbstractGatewayFilterFactory<JwtValidateF
                         .mutate()
                         .request(request -> request.header("userId",userId))
                         .build();
-            }
-            catch (IllegalArgumentException | SignatureException | MalformedJwtException | UnsupportedJwtException | ExpiredJwtException e){
+            } catch (IllegalArgumentException | JwtException e){
                 log.error("jwt exception : {}", e.toString());
-                exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-                return exchange.getResponse().setComplete();
-            }
-            catch (JwtException e){
-                log.error("jwt exception : {}", e.toString());
-                exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-                return exchange.getResponse().setComplete();
+                return setExchangeForUnauthorizedResponse(exchange);
             }
             return chain.filter(modifiedExchange);
         });
+    }
+
+    private Mono<Void> setExchangeForUnauthorizedResponse(ServerWebExchange exchange) {
+        byte[] bytes = "{ \"code\" : \"401\", \"message\" : \"UNAUTHORIZED TOKEN\"} ".getBytes(StandardCharsets.UTF_8);
+        DataBuffer buffer = exchange.getResponse().bufferFactory().wrap(bytes);
+        exchange.getResponse().getHeaders().add("Content-Type", "\"application/json\"");
+        exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+        return exchange.getResponse().writeWith(Flux.just(buffer));
     }
 
 

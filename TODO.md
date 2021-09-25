@@ -19,10 +19,11 @@
 # 해야할 일 : 토요일 18시 이전까지
 0. AWS 키 나오면 미리 준비해서 배포.
 1. (태훈) UserManager API 응답 최신 포멧에 맞게끔 수정.
-2. (현주) Access Token(Bearer), Id Token(Body)을 받아야한다. -> 문서 업데이트
+2. ~~(현주) Access Token(Bearer), Id Token(Body)을 받아야한다. -> 문서 업데이트~~
 3. (태훈) AWS에 micro service 구축 -> 토요일 18시 이전까지 각 서비스 업데이트완료 예정. 토요일 18시 이후에 빌드해서 EC2에 쌩으로 배포, 일요일 오전 10시에 같이 테스트
    - (현주) RDS, S3 등 나눌수 있는 부분은 나눈다.
 4. (태훈, 현주 생각) 추가 서비스 생각 & 구축
    - URL Shortener 어떻게? -> 청화님께 요청.
 5. ~~(태훈) 다른 서비스로의 라우팅처리~~
-6. (현주) ConnectException 구현 (ex. 내부 서비스 끼리의 문제가 발생했을 때의 처리) -> Exception 잡아다가 code, message에 내용 추가해서 넘겨주기. Apigw에서 401 반환 시에 Body 넣어주기. -> 방법 없다면 이대로도 괜찮.
+6. (현주) ~~인증 에러시 body, message 세팅~~ 
+7. ~~(현주) ConnectException 구현 (ex. 내부 서비스 끼리의 문제가 발생했을 때의 처리) -> Exception 잡아다가 code, message에 내용 추가해서 넘겨주기. Apigw에서 401 반환 시에 Body 넣어주기. -> 방법 없다면 이대로도 괜찮.~~
