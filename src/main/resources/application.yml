@@ -5,28 +5,10 @@ vmcServicesAddr:
 
 server:
   port: 8000
-
 spring:
   redis:
     host: localhost
     port: 6379
   profiles:
     include: oauth
-  cloud:
-    gateway:
-      globalcors:
-        corsConfigurations:
-          '[/**]':
-            allowedOrigins: "http://localhost:3000"
-            allowedHeaders:
-              - x-requested-with
-              - authorization
-              - content-type
-              - credential
-              - X-AUTH-TOKEN
-              - X-CSRF-TOKEN
-            allow-credentials: true   #추가
-            allowedMethods:
-              - GET
-              - POST
 foo: bar_default
