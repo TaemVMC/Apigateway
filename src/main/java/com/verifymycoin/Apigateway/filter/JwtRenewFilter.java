@@ -30,7 +30,7 @@ public class JwtRenewFilter extends AbstractGatewayFilterFactory<JwtRenewFilter.
             return chain.filter(exchange).then(Mono.fromRunnable(()->{
                 String jwt = jwtTokenConfig.resolveToken(exchange.getRequest());
                 Claims claims = jwtTokenConfig.parseToken(jwt);
-                String userId = claims.get("id").toString();
+                String userId = claims.get("userId").toString();
                 String userEmail = claims.get("email").toString();
 
 

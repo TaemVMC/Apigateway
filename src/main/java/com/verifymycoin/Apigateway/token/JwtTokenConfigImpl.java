@@ -31,7 +31,7 @@ public class JwtTokenConfigImpl implements JwtTokenConfig{
                 .setIssuer(ISSUER) // (2)
                 .setIssuedAt(now) // (3)
                 .setExpiration(new Date(now.getTime() + Duration.ofMinutes(JWT_DURATION_MIN).toMillis())) // (4)
-                .claim("id", userId) // (5)
+                .claim("userId", userId) // (5)
                 .claim("email", useremail)
                 .signWith(SignatureAlgorithm.HS256, secret) // (6)
                 .compact();

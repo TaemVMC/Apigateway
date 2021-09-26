@@ -71,14 +71,15 @@ public class RouteConfig {
     private Publisher<String> createJWToken(ServerWebExchange exchange, String body) {
         ServerHttpResponse response = exchange.getResponse();
         if (response.getStatusCode() == HttpStatus.OK) {
-            JSONObject jsObject = new JSONObject(body);
-            String jwt = jwtTokenConfig.makeToken(jsObject.getString("userId"), jsObject.getString("email"));
+            JSONObject rsBodyFromUserMgr = new JSONObject(body).getJSONObject("data");
+
+            String jwt = jwtTokenConfig.makeToken(rsBodyFromUserMgr.getString("userId"), rsBodyFromUserMgr.getString("email"));
             response.getHeaders().add("jwt", jwt);
 //            jsObject.put("jwt", jwt);
 //            body = jsObject.toString();
 
             jwtTokenConfig
-                    .saveTokenInRedis(jsObject.getString("userId"), jwt)
+                    .saveTokenInRedis(rsBodyFromUserMgr.getString("userId"), jwt)
                     .subscribe();
         }
         return Mono.just(body);

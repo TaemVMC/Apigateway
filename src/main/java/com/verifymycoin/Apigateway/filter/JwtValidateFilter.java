@@ -36,10 +36,11 @@ public class JwtValidateFilter extends AbstractGatewayFilterFactory<JwtValidateF
             try{
                 String jwt = jwtTokenConfig.resolveToken(exchange.getRequest());
                 Claims claims = jwtTokenConfig.parseToken(jwt);
-                String userId = claims.get("id").toString();
+                String userId = claims.get("userId").toString();
 
                 // TODO : Reactive한 로직?
                 String jwtInRedis = jwtTokenConfig.getTokenInRedisByUserId(userId).share().block();
+                System.out.println("jwtInRedis = " + jwtInRedis);
                 if(jwtInRedis.isEmpty() || !jwtInRedis.equals(jwt)) throw new JwtException("does not exist token in database");
 
                 modifiedExchange =  exchange
