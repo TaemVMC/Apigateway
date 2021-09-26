@@ -12,7 +12,11 @@ on:
       destination_server:
         description: 'Server to deploy'
         required: True
-        default: '54.180.31.1	'
+        default: '54.180.31.1'
+      package_name:
+        description: 'Package to deploy'
+        required: True
+        default: 'Apigateway-0.0.1-SNAPSHOT.jar'
 
 jobs:
   build:
@@ -35,26 +39,32 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
-#     - name: Build with Gradle
-#       run: ./gradlew clean build
+    - name: Build with Gradle
+      run: ./gradlew clean build
       
     - name: Save pem to file
       run: 'echo "$EC2_PEM" > .vmc.pem && chmod 400 .vmc.pem'
       shell: bash
       env:
         EC2_PEM: ${{secrets.EC2_PEM}}
-#     - name: copy file via ssh key
-#       uses: appleboy/scp-action@master
-#       with:
-#         host: ${{ github.event.inputs.destination_server }}
-#         username: ubuntu
-#         key: ".vmc.pem"
-#         source: "Dockerfile"
-#         target: "/home/ubuntu/"
-    - name: Send file to EC2
-#       run: scp -i ".vmc.pem" build/libs/UserManager-0.0.1-SNAPSHOT.jar ubuntu@${{ github.event.inputs.destination_server }}:/home/ubuntu/ 
-      run: scp -i ".vmc.pem" Dockerfile ubuntu@${{ github.event.inputs.destination_server }}:/home/ubuntu/ 
-    # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
+    - name: Send jar file to EC2
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ github.event.inputs.destination_server }}
+        username: ubuntu
+        key_path: ".vmc.pem"
+        source: build/libs/${{ github.event.inputspackage_name }}
+        target: "/home/ubuntu/"
+    - name: Rerun new jar
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ github.event.inputs.destination_server }}
+        username: ubuntu
+        key_path: ".vmc.pem"
+        script: |
+           ps aux | grep -i ${{ github.event.inputspackage_name }} | head -n 1| awk {'print $2'} | xargs kill -9
+           SPRING_PROFILES_ACTIVE=prod java -jar ${{ github.event.inputspackage_name }}
+# The USERNAME and TOKEN need to correspond to the credentials environment variables used in
     # the publishing section of your build.gradle
 #     - name: Publish to GitHub Packages
 #       run: gradle publish
