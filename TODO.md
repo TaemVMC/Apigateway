@@ -27,3 +27,4 @@
 5. ~~(태훈) 다른 서비스로의 라우팅처리~~
 6. ~~(현주) 인증 에러시 body, message 세팅~~ 
 7. ~~(현주) ConnectException 구현 (ex. 내부 서비스 끼리의 문제가 발생했을 때의 처리) -> Exception 잡아다가 code, message에 내용 추가해서 넘겨주기. Apigw에서 401 반환 시에 Body 넣어주기. -> 방법 없다면 이대로도 괜찮.~~
+tt
