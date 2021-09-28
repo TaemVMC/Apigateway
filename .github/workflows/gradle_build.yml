@@ -1,73 +1,77 @@
-# This workflow will build a package using Gradle and then publish it to GitHub packages when a release is created
-# For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#Publishing-using-gradle
-
-# Repo Action 페이지에 나타날 이름 
-name: Spring Boot & Gradle CI/CD 
+name: CI/CD on development branch
 
 on:
-#   release:
-#     types: [created]
-  workflow_dispatch:
-    inputs:
-      destination_server:
-        description: 'Server to deploy'
-        required: True
-        default: '54.180.31.1'
-      package_name:
-        description: 'Package to deploy'
-        required: True
-        default: 'Apigateway-0.0.1-SNAPSHOT.jar'
+  push:
+    branches:
+      - development
+
+env:
+  DOCKER_HUB_REPO: on91716/dev.apigateway  # on91716/dev.${{ github.event.repository.name }}
+  PROFILES: prod
+  DESTINATION_SERVER: 3.37.123.157
 
 jobs:
-  build:
-
+  ci_job:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up JDK 11
-      uses: actions/setup-java@v2
-      with:
-        java-version: '11'
-        distribution: 'adopt'
-        server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
-        settings-path: ${{ github.workspace }} # location for the settings.xml file
+    
+    ########################## 1. For Docker build ##########################
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
 
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-
-    - name: Build with Gradle
-      run: ./gradlew clean build
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
       
-    - name: Save pem to file
+    - name: Login to DockerHub
+      uses: docker/login-action@v1 
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+    
+    - name: Build and push
+      id: docker_build
+      uses: docker/build-push-action@v2
+      with:
+        push: true
+        target: production
+        tags: |
+          ${{ env.DOCKER_HUB_REPO }}:latest
+          ${{ env.DOCKER_HUB_REPO }}:${{ github.sha }}
+    ########################################################################
+
+  cd_job:
+    needs: ci_job
+    runs-on: ubuntu-latest
+    steps:
+    ########################## 2. For SSH command ##########################
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        repository: TaemVMC/Builder
+
+    - name: Set AWS Key
       run: 'echo "$EC2_PEM" > .vmc.pem && chmod 400 .vmc.pem'
       shell: bash
       env:
         EC2_PEM: ${{secrets.EC2_PEM}}
-    - name: Send jar file to EC2
+
+    - name: remove the specified number of leading path elements
       uses: appleboy/scp-action@master
       with:
-        host: ${{ github.event.inputs.destination_server }}
+        host: ${{ env.DESTINATION_SERVER }}
         username: ubuntu
         key_path: ".vmc.pem"
-        source: build/libs/${{ github.event.inputspackage_name }}
-        target: "/home/ubuntu/"
-    - name: Rerun new jar
+        source: "docker-compose.dev.yml"
+        target: "./"
+
+        
+    - name: Update Docker compose
       uses: appleboy/ssh-action@master
       with:
-        host: ${{ github.event.inputs.destination_server }}
+        host: ${{ env.DESTINATION_SERVER }}
         username: ubuntu
         key_path: ".vmc.pem"
         script: |
-           ps aux | grep -i ${{ github.event.inputspackage_name }} | head -n 1| awk {'print $2'} | xargs kill -9
-           SPRING_PROFILES_ACTIVE=prod java -jar ${{ github.event.inputspackage_name }}
-# The USERNAME and TOKEN need to correspond to the credentials environment variables used in
-    # the publishing section of your build.gradle
-#     - name: Publish to GitHub Packages
-#       run: gradle publish
-#       env:
-#         USERNAME: ${{ github.actor }}
-#         TOKEN: ${{ secrets.GITHUB_TOKEN }}
+           docker-compose pull ${{ env.DOCKER_HUB_REPO }}
+           docker-compose -f docker-compose.dev.yml up -d
+    ########################################################################
