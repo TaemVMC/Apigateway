@@ -1,4 +1,16 @@
 server:
   port: 8080
 
-foo: bar_prod
+vmcServicesAddr:
+  UserManager: "http://user-manager:8080"
+  VerificationManager: "http://verification-manager:8080"
+  TransactionManager: "http://transaction-manager:8080"
+
+spring:
+  redis:
+    host: localhost
+    port: 6379
+
+# You should inject secret
+token:
+  secret: ahfmrpTek
