@@ -27,4 +27,27 @@
 5. ~~(태훈) 다른 서비스로의 라우팅처리~~
 6. ~~(현주) 인증 에러시 body, message 세팅~~ 
 7. ~~(현주) ConnectException 구현 (ex. 내부 서비스 끼리의 문제가 발생했을 때의 처리) -> Exception 잡아다가 code, message에 내용 추가해서 넘겨주기. Apigw에서 401 반환 시에 Body 넣어주기. -> 방법 없다면 이대로도 괜찮.~~
-tt
+
+
+---
+# 2021.9.29 (수)
+
+## 할일
+1. [현주] Redis, Mysql, Mongodb, Kafka 2벌 dev, prod -> 태훈계정 EC2 제공
+
+2. [태훈] 각 서비스에서 prod profile -> prod DB, Kafka를 바라보도록, dev profile -> dev DB, Kafka를 바라보도록 수정 필요.
+  - UserManager 수정 
+
+[production 배포도 하나의 EC2에서 compose 환경으로 배포]
+
+3. [현주] Apigw, Usermanager
+   - Builder Repo(compose yml)에 redis를 추가하고, apigw compose 상의 redis를 바라보도록.
+
+4. [태훈] UserManager 카프카 구현
+  - 회원탈퇴
+  - 회원가입
+
+ ~> (금 저녁 or 토 아침) 전체회의
+
+
+
