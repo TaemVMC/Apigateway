@@ -5,4 +5,3 @@
 token:
   secret: ahfmrpTek
 ```
-test
