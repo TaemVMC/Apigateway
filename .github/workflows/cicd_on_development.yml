@@ -73,6 +73,6 @@ jobs:
         username: ubuntu
         key_path: ".vmc.pem"
         script: |
-           docker-compose -f docker-compose.dev.yml pull ${{ env.DOCKER_HUB_REPO }}
+           docker-compose -f docker-compose.dev.yml pull ${{ env.DOCKER_COMPOSE_SERVICE }}
            SPRING_PROFILES_ACTIVE=${{ env.PROFILES }} docker-compose -f docker-compose.dev.yml up -d ${{env.DOCKER_COMPOSE_SERVICE}}
     ########################################################################
