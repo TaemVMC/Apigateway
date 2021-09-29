@@ -6,6 +6,7 @@ on:
       - main
 
 env:
+  DOCKER_COMPOSE_SERVICE: apigateway
   DOCKER_HUB_REPO: on91716/apigateway #on91716/${{ github.event.repository.name }}
   PROFILES: prod
   DESTINATION_SERVER: 15.164.212.175
@@ -99,5 +100,5 @@ jobs:
         key_path: ".vmc.pem"
         script: |
            docker-compose pull ${{ env.DOCKER_HUB_REPO }}
-           docker-compose up -d
+           SPRING_PROFILES_ACTIVE=${{ env.PROFILES }} docker-compose -f docker-compose.prod.yml up -d ${{ env.DOCKER_COMPOSE_SERVICE }}
     #######################################################################
