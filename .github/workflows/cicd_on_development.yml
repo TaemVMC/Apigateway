@@ -75,4 +75,5 @@ jobs:
         script: |
            docker-compose -f docker-compose.dev.yml pull ${{ env.DOCKER_COMPOSE_SERVICE }}
            SPRING_PROFILES_ACTIVE=${{ env.PROFILES }} docker-compose -f docker-compose.dev.yml up -d ${{env.DOCKER_COMPOSE_SERVICE}}
+           docker rmi -f $(docker images -f "dangling=true" -q)
     ########################################################################
