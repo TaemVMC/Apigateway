@@ -6,8 +6,9 @@ on:
       - development
 
 env:
+  DOCKER_COMPOSE_SERVICE: apigateway
   DOCKER_HUB_REPO: on91716/dev.apigateway  # on91716/dev.${{ github.event.repository.name }}
-  PROFILES: prod
+  PROFILES: dev
   DESTINATION_SERVER: 3.37.123.157
 
 jobs:
@@ -33,7 +34,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        target: production
+        target: development
         tags: |
           ${{ env.DOCKER_HUB_REPO }}:latest
           ${{ env.DOCKER_HUB_REPO }}:${{ github.sha }}
@@ -73,5 +74,5 @@ jobs:
         key_path: ".vmc.pem"
         script: |
            docker-compose pull ${{ env.DOCKER_HUB_REPO }}
-           docker-compose -f docker-compose.dev.yml up -d
+           SPRING_PROFILES_ACTIVE=${{ env.PROFILES }} docker-compose -f docker-compose.dev.yml up -d ${{env.DOCKER_COMPOSE_SERVICE}}
     ########################################################################
