@@ -33,21 +33,26 @@
 # 2021.9.29 (수)
 
 ## 할일
-1. [현주] Redis, Mysql, Mongodb, Kafka 2벌 dev, prod -> 태훈계정 EC2 제공
+1. ~~~[현주] Mysql, Mongodb, Kafka 2벌 dev, prod -> 태훈계정 EC2 제공~~~
+- prod 배포
 
-2. [태훈] 각 서비스에서 prod profile -> prod DB, Kafka를 바라보도록, dev profile -> dev DB, Kafka를 바라보도록 수정 필요.
-  - UserManager 수정 
+2. ~~[태훈] 각 서비스에서 prod profile -> prod DB, Kafka를 바라보도록, dev profile -> dev DB, Kafka를 바라보도록 수정 필요.~~
+  - ~~UserManager 수정 ~~
 
-[production 배포도 하나의 EC2에서 compose 환경으로 배포]
+~~[production 배포도 하나의 EC2에서 compose 환경으로 배포]~~
 
-3. [현주] Apigw, Usermanager
-   - Builder Repo(compose yml)에 redis를 추가하고, apigw compose 상의 redis를 바라보도록.
+3. ~~[현주] Apigw, Usermanager~~
+   - ~~Builder Repo(compose yml)에 redis를 추가하고, apigw compose 상의 redis를 바라보도록.~~
 
-4. [태훈] UserManager 카프카 구현
+4. [태훈] UserManager 카프카 구현 -> 주말
   - 회원탈퇴
   - 회원가입
 
- ~> (금 저녁 or 토 아침) 전체회의
+---
+# 2021.10.01 금
+
+
+
 
 
 
