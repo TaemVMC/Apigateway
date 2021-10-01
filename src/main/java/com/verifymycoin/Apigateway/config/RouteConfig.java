@@ -73,13 +73,13 @@ public class RouteConfig {
         if (response.getStatusCode() == HttpStatus.OK) {
             JSONObject rsBodyFromUserMgr = new JSONObject(body).getJSONObject("data");
 
-            String jwt = jwtTokenConfig.makeToken(rsBodyFromUserMgr.getString("userId"), rsBodyFromUserMgr.getString("email"));
+            String jwt = jwtTokenConfig.makeToken(rsBodyFromUserMgr.getString("user_id"), rsBodyFromUserMgr.getString("email"));
             response.getHeaders().add("jwt", jwt);
 //            jsObject.put("jwt", jwt);
 //            body = jsObject.toString();
 
             jwtTokenConfig
-                    .saveTokenInRedis(rsBodyFromUserMgr.getString("userId"), jwt)
+                    .saveTokenInRedis(rsBodyFromUserMgr.getString("user_id"), jwt)
                     .subscribe();
         }
         return Mono.just(body);
