@@ -8,7 +8,7 @@ vmcServicesAddr:
 
 spring:
   redis:
-    host: localhost
+    host: redis
     port: 6379
 
 # You should inject secret
