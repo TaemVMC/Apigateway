@@ -44,15 +44,15 @@
 3. ~~[현주] Apigw, Usermanager~~
    - ~~Builder Repo(compose yml)에 redis를 추가하고, apigw compose 상의 redis를 바라보도록.~~
 
-4. [태훈] UserManager 카프카 구현 -> 주말
-  - 회원탈퇴
-  - 회원가입
 
 ---
 # 2021.10.01 금
 
+1. [태훈] UserManager 카프카 구현 -> 주말
+  - 회원탈퇴
+  - 회원가입
 
-
+2. Frontend CI/CD(S3)
 
 
 
