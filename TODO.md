@@ -52,7 +52,7 @@
   - 회원탈퇴
   - 회원가입
 
-2. Frontend CI/CD(S3)
+2. [현주] Frontend CI/CD(S3)
 
 
 
