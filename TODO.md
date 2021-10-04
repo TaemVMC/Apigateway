@@ -33,8 +33,8 @@
 # 2021.9.29 (수)
 
 ## 할일
-1. ~~~[현주] Mysql, Mongodb, Kafka 2벌 dev, prod -> 태훈계정 EC2 제공~~~
-- prod 배포
+1. ~~[현주] Mysql, Mongodb, Kafka 2벌 dev, prod -> 태훈계정 EC2 제공~~
+- ~~prod 배포~~
 
 2. ~~[태훈] 각 서비스에서 prod profile -> prod DB, Kafka를 바라보도록, dev profile -> dev DB, Kafka를 바라보도록 수정 필요.~~
   - ~~UserManager 수정 ~~
@@ -52,7 +52,7 @@
   - 회원탈퇴
   - 회원가입
 
-2. [현주] Frontend CI/CD(S3)
+2. [현주] Frontend CI/CD(S3) 
 
 
 
