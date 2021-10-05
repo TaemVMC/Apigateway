@@ -1,11 +1,5 @@
 server:
   port: 8080
-  ssl:
-    enabled: true
-    key-alias: vmc_key_store
-    key-store-password: 123456
-    key-store: classpath:vmc_key_store.p12
-    key-store-type: PKCS12
 
 vmcServicesAddr:
   UserManager: "http://user-manager:8080"
