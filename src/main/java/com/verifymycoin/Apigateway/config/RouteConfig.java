@@ -57,7 +57,7 @@ public class RouteConfig {
                                 .filter(jwtValidateFilter.apply(new JwtValidateFilter.Config("dummy", true, false)))
                                 .filter(jwtRenewFilter.apply(new JwtRenewFilter.Config("dummy", true, false))))
                         .uri(verificationManagerAddr))
-                .route(r -> r.path("/exchange/**")
+                .route(r -> r.path("/transactions/**")
                         .filters(f -> f
                                 .filter(jwtValidateFilter.apply(new JwtValidateFilter.Config("dummy", true, false)))
                                 .filter(jwtRenewFilter.apply(new JwtRenewFilter.Config("dummy", true, false))))
