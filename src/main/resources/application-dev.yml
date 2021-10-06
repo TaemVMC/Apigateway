@@ -1,4 +1,19 @@
 server:
   port: 8080
 
-foo: bar_dev
+spring:
+  redis:
+    host: redis
+    port: 6379
+
+service:
+  vmcServicesAddr:
+    UserManager: "http://user-manager:8080"
+    VerificationManager: "http://verification-manager:8080"
+    TransactionManager: "http://transaction-manager:8080"
+
+  allowedOrigin: "http://localhost:3000"
+
+  # You should inject secret
+  token:
+    secret: ahfmrpTek

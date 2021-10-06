@@ -1,0 +1,105 @@
+name: CI/CD on main branch
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  DOCKER_COMPOSE_SERVICE: apigateway
+  DOCKER_HUB_REPO: on91716/apigateway #on91716/${{ github.event.repository.name }}
+  PROFILES: prod
+  DESTINATION_SERVER: 15.164.212.175
+
+
+jobs:
+  versioning_job:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.tag_version.outputs.new_tag }}
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Bump version and push tag
+      id: tag_version
+      uses: mathieudutour/github-tag-action@v5.5
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }} # secrets.GITHUB_TOKEN 는 자동생성됨
+
+    - name: Create a GitHub release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.tag_version.outputs.new_tag }}
+        release_name: Release ${{ steps.tag_version.outputs.new_tag }}
+        body: ${{ steps.tag_version.outputs.changelog }}
+
+
+  ci_job:
+    runs-on: ubuntu-latest
+    needs: versioning_job
+    steps:
+
+    ########################## 1. For Docker build ##########################
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+      
+    - name: Login to DockerHub
+      uses: docker/login-action@v1 
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+      
+    - name: Build and push
+      id: docker_build
+      uses: docker/build-push-action@v2
+      with:
+        push: true
+        target: production
+        tags: |
+          ${{ env.DOCKER_HUB_REPO }}:latest
+          ${{ env.DOCKER_HUB_REPO }}:${{ needs.versioning_job.outputs.version }}
+    ########################################################################
+
+  cd_job:
+    needs: ci_job
+    runs-on: ubuntu-latest
+    steps:
+    ########################## 2. For SSH command ##########################
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        repository: TaemVMC/Builder
+
+    - name: Set AWS Key
+      run: 'echo "$EC2_PEM" > .vmc.pem && chmod 400 .vmc.pem'
+      shell: bash
+      env:
+        EC2_PEM: ${{secrets.EC2_PEM}}
+
+    - name: remove the specified number of leading path elements
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ env.DESTINATION_SERVER }}
+        username: ubuntu
+        key_path: ".vmc.pem"
+        source: "docker-compose.prod.yml"
+        target: "./"
+
+        
+    - name: Update Docker compose
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ env.DESTINATION_SERVER }}
+        username: ubuntu
+        key_path: ".vmc.pem"
+        script: |
+           docker-compose -f docker-compose.prod.yml pull ${{ env.DOCKER_COMPOSE_SERVICE }}
+           SPRING_PROFILES_ACTIVE=${{ env.PROFILES }} docker-compose -f docker-compose.prod.yml up -d ${{ env.DOCKER_COMPOSE_SERVICE }}
+           docker rmi -f $(docker images -f "dangling=true" -q)
+    #######################################################################
