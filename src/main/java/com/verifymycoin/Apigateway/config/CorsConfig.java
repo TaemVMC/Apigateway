@@ -14,6 +14,8 @@ public class CorsConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.addAllowedHeader("*");
+        corsConfiguration.addAllowedHeader("Authorization");
+        corsConfiguration.addAllowedHeader("jwt");
         corsConfiguration.addAllowedOrigin("http://localhost:3000");
 //         corsConfiguration.addAllowedOrigin("http://vmctesthwang.s3-website.ap-northeast-2.amazonaws.com");
         //corsConfiguration.addAllowedOrigin("http://vmc-front-prd.s3-website.ap-northeast-2.amazonaws.com");
