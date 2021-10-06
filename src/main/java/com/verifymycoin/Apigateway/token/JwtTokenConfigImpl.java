@@ -16,7 +16,7 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class JwtTokenConfigImpl implements JwtTokenConfig{
 
-    @Value("${token.secret}")
+    @Value("${service.token.secret}")
     private String secret;
     private final String ISSUER = "VMC";
     private final long JWT_DURATION_MIN = 30;

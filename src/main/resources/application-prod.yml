@@ -1,17 +1,19 @@
 server:
   port: 8080
 
-
-vmcServicesAddr:
-  UserManager: "http://user-manager:8080"
-  VerificationManager: "http://verification-manager:8080"
-  TransactionManager: "http://transaction-manager:8080"
-
 spring:
   redis:
     host: redis
     port: 6379
 
-# You should inject secret
-token:
-  secret: ahfmrpTek
+service:
+  vmcServicesAddr:
+    UserManager: "http://user-manager:8080"
+    VerificationManager: "http://verification-manager:8080"
+    TransactionManager: "http://transaction-manager:8080"
+
+  allowedOrigin: "http://vmc-front-prd.s3-website.ap-northeast-2.amazonaws.com"
+
+  # You should inject secret
+  token:
+    secret: ahfmrpTek
