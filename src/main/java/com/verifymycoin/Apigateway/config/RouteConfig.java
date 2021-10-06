@@ -25,13 +25,13 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 @Slf4j
 public class RouteConfig {
-    @Value("${vmcServicesAddr.UserManager}")
+    @Value("${service.vmcServicesAddr.UserManager}")
     private String userManagerAddr;
 
-    @Value("${vmcServicesAddr.VerificationManager}")
+    @Value("${service.vmcServicesAddr.VerificationManager}")
     private String verificationManagerAddr;
 
-    @Value("${vmcServicesAddr.TransactionManager}")
+    @Value("${service.vmcServicesAddr.TransactionManager}")
     private String transactionManagerAddr;
 
     private final JwtTokenConfig jwtTokenConfig;
