@@ -17,12 +17,3 @@ service:
   # You should inject secret
   token:
     secret: ahfmrpTek
-
-
-logging:
-  file:
-    name: "/log/apigateway.log"
-  logback:
-    rollingpolicy:
-      max-file-size: 10MB
-      total-size-cap: 100MB
