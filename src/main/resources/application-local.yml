@@ -21,7 +21,7 @@ service:
 
 logging:
   file:
-    name: "user-manager.log"
+    name: "/log/apigateway.log"
   logback:
     rollingpolicy:
       max-file-size: 10MB
