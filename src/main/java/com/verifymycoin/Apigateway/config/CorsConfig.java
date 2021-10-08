@@ -18,6 +18,10 @@ public class CorsConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.addAllowedHeader("*");
+        corsConfiguration.addExposedHeader("jwt");
+//         corsConfiguration.addAllowedOrigin("http://vmctesthwang.s3-website.ap-northeast-2.amazonaws.com");
+        //corsConfiguration.addAllowedOrigin("http://vmc-front-prd.s3-website.ap-northeast-2.amazonaws.com");
+        //corsConfiguration.addAllowedOrigin("https://teamvmc.github.io");
         corsConfiguration.addAllowedOrigin(allowedOrigin);
         corsConfiguration.addAllowedMethod("*");
         corsConfiguration.setAllowCredentials(true);
