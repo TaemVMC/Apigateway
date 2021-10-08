@@ -17,3 +17,12 @@ service:
   # You should inject secret
   token:
     secret: ahfmrpTek
+
+
+logging:
+  file:
+    name: "user-manager.log"
+  logback:
+    rollingpolicy:
+      max-file-size: 10MB
+      total-size-cap: 100MB
