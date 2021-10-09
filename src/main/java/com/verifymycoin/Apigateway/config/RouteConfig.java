@@ -43,15 +43,13 @@ public class RouteConfig {
                         .filters(f -> f
                                 .modifyResponseBody(String.class, String.class, this::createJWToken))
                         .uri(userManagerAddr))
-                .route("signup_route", r -> r.path("/user/signup")
-                        .filters(f -> f
-                                .modifyResponseBody(String.class, String.class, this::createJWToken))
-                        .uri("http://localhost:8003/"))
                 .route(r -> r.path("/user/**")
                         .filters(f -> f
                                 .filter(jwtValidateFilter.apply(new JwtValidateFilter.Config("dummy", true, false)))
                                 .filter(jwtRenewFilter.apply(new JwtRenewFilter.Config("dummy", true, false))))
                         .uri(userManagerAddr))
+                .route(r -> r.path("/verification/external/**")
+                        .uri(verificationManagerAddr))
                 .route(r -> r.path("/verification/**")
                         .filters(f -> f
                                 .filter(jwtValidateFilter.apply(new JwtValidateFilter.Config("dummy", true, false)))
